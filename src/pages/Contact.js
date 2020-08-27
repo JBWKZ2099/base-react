@@ -1,8 +1,24 @@
 import React from 'react';
-import {Row, Col, Form, Button} from 'react-bootstrap';
+import { Row, Col, Form, Button } from 'react-bootstrap';
 import DocumentMeta from "react-document-meta";
+import $ from "jquery";
+// import ScriptTag from 'react-script-tag';
+import { loadReCaptcha } from 'react-recaptcha-v3'
 
 class Contact extends React.Component {
+	componentDidMount() {
+  	loadReCaptcha(process.env.REACT_APP_GRPUBPLIC, () => {});
+	}
+	executeRecaptcha() {
+		window.grecaptcha.ready(() => {
+			window.grecaptcha
+				.execute( process.env.REACT_APP_GRPUBPLIC, {action: "get_in_touch"} )
+				.then((token) => {
+			    $('form#contact-form').prepend('<input type="hidden" name="g-recaptcha-response" value="' + token + '">');
+			    $('form#contact-form').prepend('<input type="hidden" name="action" value="get_in_touch">');
+				});
+		});
+	}
 	render() {
 		const _pathname = window.location.pathname;
 		const meta = {
@@ -23,7 +39,7 @@ class Contact extends React.Component {
 			      <Col md="6">
 			        <h1 className="font-weigh-bold mb-3 mb-md-4">Contact Page</h1>
 
-			        <Form method="POST" action="contact-sender">
+			        <Form method="POST" id="contact-form" action="contact-sender">
 			        	<Form.Group>
 			        		<Form.Label>* Nombre</Form.Label>
 			        		<Form.Control type="text" required></Form.Control>
@@ -41,7 +57,7 @@ class Contact extends React.Component {
 
 			        	<Form.Group>
 			        		<Form.Label>* Mensaje</Form.Label>
-			        		<Form.Control as="textarea" required></Form.Control>
+			        		<Form.Control as="textarea" required onFocus={this.executeRecaptcha.bind(this)}></Form.Control>
 			        	</Form.Group>
 
 			        	<Form.Group className="form-row justify-content-end">

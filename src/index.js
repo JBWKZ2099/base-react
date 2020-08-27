@@ -7,6 +7,9 @@ import * as serviceWorker from './serviceWorker';
 /*Para el correcto funcionamiento de las Rutas*/
 import { BrowserRouter } from 'react-router-dom';
 
+/* Para renderizar etiquetas script */
+// import ScriptTag from 'react-script-tag';
+
 /*Header y Footer*/
 import Header from "./structure/Header";
 import Footer from "./structure/Footer";
